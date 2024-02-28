@@ -40,10 +40,48 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of
 // Person Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
-
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        // MY APPROACH
+        // if s.is_empty() {
+        //     return Self::default();
+        // }
+
+        // let v: Vec<&str> = s.split(',').collect();
+        // if v.len() < 2 {
+        //     return Self::default();
+        // }
+
+        // let name_str = v.get(0).unwrap();
+        // let age_str = v.get(1).unwrap();
+
+        // if name_str.is_empty() {
+        //     return Self::default();
+        // }
+
+        // let age_exp = age_str.parse::<usize>();
+        // if age_exp.is_err() {
+        //     return Self::default();
+        // }
+
+        // Person {
+        //     name: name_str.to_string(),
+        //     age: age_exp.unwrap(),
+        // }
+
+        // chatgpt approach
+        let v: Vec<&str> = s.splitn(3, ',').collect();
+        if let [name_str, age_str, ..] = v.as_slice() {
+            if !name_str.is_empty() {
+                if let Ok(age) = age_str.parse::<usize>() {
+                    return Person {
+                        name: name_str.to_string(),
+                        age,
+                    };
+                }
+            }
+        }
+        Self::default()
     }
 }
 

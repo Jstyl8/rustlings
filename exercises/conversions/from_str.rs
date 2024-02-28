@@ -31,8 +31,6 @@ enum ParsePersonError {
     ParseInt(ParseIntError),
 }
 
-// I AM NOT DONE
-
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
 // 2. Split the given string on the commas present in it
@@ -52,6 +50,71 @@ enum ParsePersonError {
 impl FromStr for Person {
     type Err = ParsePersonError;
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        // -------------------- MY APPROACH V1
+        // if s.is_empty() {
+        //     return Err(Self::Err::Empty);
+        // }
+
+        // let v: Vec<&str> = s.split(',').collect();
+        // if v.len() != 2 {
+        //     return Err(Self::Err::BadLen);
+        // }
+
+        // let name_str = v.get(0).unwrap();
+        // let age_str = v.get(1).unwrap();
+
+        // if name_str.is_empty() {
+        //     return Err(Self::Err::NoName);
+        // }
+
+        // let age_exp = age_str.parse::<usize>();
+        // if age_exp.is_err() {
+        //     return Err(Self::Err::ParseInt(age_exp.err().unwrap()));
+        // }
+
+        // Ok(Person {
+        //     name: name_str.to_string(),
+        //     age: age_exp.unwrap(),
+        // })
+
+        // -------------------- MY APPROACH V2
+        if s.is_empty() {
+            return Err(Self::Err::Empty);
+        }
+
+        let v: Vec<&str> = s.split(',').collect();
+        if v.len() != 2 {
+            return Err(Self::Err::BadLen);
+        }
+
+        let name_str = v.get(0).unwrap();
+        let age_str = v.get(1).unwrap();
+
+        if name_str.is_empty() {
+            return Err(Self::Err::NoName);
+        }
+
+        let name = name_str.to_string();
+        let age = age_str.parse::<usize>().map_err(Self::Err::ParseInt)?;
+
+        Ok(Person { name, age })
+
+        // ---------------------- CHATGPT APPROACH - WHICH IS NOT CORRECT for testing
+        // let mut parts = s.split(',');
+        // // Extract name and age slices using pattern matching.
+        // match (parts.next(), parts.next()) {
+        //     (Some(name_str), Some(age_str)) if !name_str.is_empty() => {
+        //         // Attempt to parse the age part.
+        //         age_str
+        //             .parse::<usize>()
+        //             .map(|age| Person {
+        //                 name: name_str.to_string(),
+        //                 age,
+        //             })
+        //             .map_err(Self::Err::ParseInt)
+        //     }
+        //     _ => Err(Self::Err::BadLen),
+        // }
     }
 }
 
